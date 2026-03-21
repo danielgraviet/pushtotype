@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import click
@@ -8,10 +9,31 @@ from whisperflow.audio import list_devices, record
 from whisperflow.transcriber import Transcriber
 
 
-@click.group()
+@click.group(invoke_without_command=True)
 @click.version_option(version=__version__)
-def main():
-    """WhisperFlow — real-time speech-to-text for Linux."""
+@click.option("--model", "model_name", default="base.en", show_default=True, help="Whisper model.")
+@click.option("--hotkey", default="rightctrl", show_default=True, help="Push-to-talk hotkey combo.")
+@click.option("--device", "audio_device", default=None, type=int, help="Audio device index.")
+@click.option("--no-feedback", is_flag=True, default=False, help="Disable audio feedback tones.")
+@click.pass_context
+def main(ctx, model_name, hotkey, audio_device, no_feedback):
+    """WhisperFlow — real-time speech-to-text for Linux.
+
+    Run without a subcommand to start the push-to-talk daemon.
+    """
+    if ctx.invoked_subcommand is None:
+        from whisperflow.daemon import Daemon
+
+        daemon = Daemon(
+            model_name=model_name,
+            hotkey=hotkey,
+            audio_device=audio_device,
+            feedback=not no_feedback,
+        )
+        try:
+            asyncio.run(daemon.run())
+        except KeyboardInterrupt:
+            pass
 
 
 @main.command()
