@@ -34,6 +34,7 @@ DEFAULT_CONFIG: dict = {
     "feedback": {
         "enabled": True,
         "volume": 0.5,
+        "style": "custom",  # "custom" (default) | "beep" | "chirp" | "double"
     },
     "output": {
         "method": "auto",

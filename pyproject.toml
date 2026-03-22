@@ -46,6 +46,7 @@ pushtotype = "pushtotype.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pushtotype"]
+artifacts = ["src/pushtotype/sounds/*.wav"]
 
 [tool.ruff]
 target-version = "py310"

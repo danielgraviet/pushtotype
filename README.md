@@ -223,3 +223,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs welcome.
 ## License
 
 [MIT](LICENSE)
+
+---
+
+## TestPyPI install (development)
+
+```bash
+uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pushtotype
+```
