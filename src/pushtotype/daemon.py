@@ -154,7 +154,9 @@ class Daemon:
         self._frames = []
         self._recording = True
         self._record_start = time.perf_counter()
-        play_start_sound(enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_start_sound)
+        play_start_sound(
+            enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_start_sound
+        )
 
     def _on_release(self) -> None:
         if not self._recording:
@@ -164,7 +166,9 @@ class Daemon:
         duration = time.perf_counter() - self._record_start
         logger.debug("Hotkey released — %.2fs recorded.", duration)
 
-        play_stop_sound(enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_stop_sound)
+        play_stop_sound(
+            enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_stop_sound
+        )
 
         if duration < MIN_RECORDING_SECONDS:
             print("Recording too short, skipping.")
@@ -172,7 +176,11 @@ class Daemon:
 
         if not self._frames:
             logger.warning("No audio captured.")
-            play_error_sound(enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_error_sound)
+            play_error_sound(
+                enabled=self.feedback,
+                style=self.feedback_style,
+                custom_path=self.feedback_error_sound,
+            )
             return
 
         audio = np.concatenate(self._frames, axis=0)
@@ -195,7 +203,11 @@ class Daemon:
             )
         except Exception as exc:
             logger.exception("Transcription failed: %s", exc)
-            play_error_sound(enabled=self.feedback, style=self.feedback_style, custom_path=self.feedback_error_sound)
+            play_error_sound(
+                enabled=self.feedback,
+                style=self.feedback_style,
+                custom_path=self.feedback_error_sound,
+            )
             print(f"  [error: {exc}]")
             return
 

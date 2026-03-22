@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import wave
 import logging
+import wave
 from pathlib import Path
 
 import numpy as np
