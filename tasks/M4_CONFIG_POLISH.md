@@ -1,19 +1,19 @@
 # Milestone 4: Configuration & Polish
 
-> **Goal:** WhisperFlow loads settings from a config file, guides first-time users through setup, handles errors gracefully, and runs reliably as a background daemon.
+> **Goal:** PushToType loads settings from a config file, guides first-time users through setup, handles errors gracefully, and runs reliably as a background daemon.
 
 ---
 
 ## Why This Phase Matters
 
-After M3, WhisperFlow works — but everything is hardcoded. Users have to pass CLI flags every time, there's no first-run experience, and errors can be confusing. This phase makes WhisperFlow feel like a finished tool: config files persist settings, first-run setup walks you through choices, and error messages actually help you fix problems. This is the difference between "a script that works" and "software I'd recommend to someone."
+After M3, PushToType works — but everything is hardcoded. Users have to pass CLI flags every time, there's no first-run experience, and errors can be confusing. This phase makes PushToType feel like a finished tool: config files persist settings, first-run setup walks you through choices, and error messages actually help you fix problems. This is the difference between "a script that works" and "software I'd recommend to someone."
 
 ---
 
 ## Prerequisites
 
 - M3 is complete (full end-to-end flow: hotkey → record → transcribe → inject text)
-- You've been dogfooding WhisperFlow and have a list of friction points
+- You've been dogfooding PushToType and have a list of friction points
 
 ---
 
@@ -33,7 +33,7 @@ By completing this milestone you will understand:
 ## Tasks
 
 ### 4.1 — Config module (`config.py`)
-- [ ] Create `src/whisperflow/config.py` with:
+- [ ] Create `src/pushtotype/config.py` with:
   - `DEFAULT_CONFIG` — a dict with all default values:
 
 ```python
@@ -68,15 +68,15 @@ DEFAULT_CONFIG = {
 }
 ```
 
-  - `config_path() -> Path` — returns `~/.config/whisperflow/config.toml`
+  - `config_path() -> Path` — returns `~/.config/pushtotype/config.toml`
   - `load_config() -> dict` — loads config from file, merges with defaults (defaults fill any missing keys)
   - `save_config(config: dict)` — writes config to TOML file, creates directory if needed
   - `validate_config(config: dict) -> list[str]` — returns a list of warnings/errors (e.g., invalid model name, unknown key names)
 
 - [ ] **Config priority (highest to lowest):**
   1. CLI flags (e.g., `--model small.en`)
-  2. Environment variables (e.g., `WHISPERFLOW_MODEL=small.en`)
-  3. Config file (`~/.config/whisperflow/config.toml`)
+  2. Environment variables (e.g., `PUSHTYPE_MODEL=small.en`)
+  3. Config file (`~/.config/pushtotype/config.toml`)
   4. Built-in defaults
 
 - [ ] Add `tomli` (read) and `tomli-w` (write) to dependencies:
@@ -88,8 +88,8 @@ DEFAULT_CONFIG = {
 
 Note: Python 3.11+ has `tomllib` in the stdlib for reading. Use `tomli` for 3.10 compat.
 
-### 4.2 — Interactive setup (`whisperflow config`)
-- [ ] Implement `whisperflow config` as an interactive wizard:
+### 4.2 — Interactive setup (`pushtotype config`)
+- [ ] Implement `pushtotype config` as an interactive wizard:
   1. **Audio device selection:**
      - List available devices (from `audio.list_devices()`)
      - Let user pick by number, or press Enter for default
@@ -106,10 +106,10 @@ Note: Python 3.11+ has `tomllib` in the stdlib for reading. Use `tomli` for 3.10
      - Show which device will be used (cuda/cpu)
      - If CUDA available, recommend `float16`; if CPU, recommend `int8`
   5. **Save config:**
-     - Write to `~/.config/whisperflow/config.toml`
+     - Write to `~/.config/pushtotype/config.toml`
      - Print the file path and a summary
 
-- [ ] `whisperflow config --show` — prints current effective config (merged defaults + file + env) without modifying anything
+- [ ] `pushtotype config --show` — prints current effective config (merged defaults + file + env) without modifying anything
 
 ### 4.3 — Wire config into all modules
 - [ ] Update `daemon.py` to load config on startup:
@@ -122,9 +122,9 @@ Note: Python 3.11+ has `tomllib` in the stdlib for reading. Use `tomli` for 3.10
 - [ ] Update all modules to accept config values instead of hardcoded defaults
 
 ### 4.4 — First-run experience
-- [ ] If no config file exists when `whisperflow` starts:
+- [ ] If no config file exists when `pushtotype` starts:
   - Print a welcome message
-  - Suggest running `whisperflow config` for guided setup
+  - Suggest running `pushtotype config` for guided setup
   - Continue with defaults (don't block the user)
 - [ ] If the model hasn't been downloaded yet:
   - Print "Downloading model base.en... (this only happens once)"
@@ -141,7 +141,7 @@ Note: Python 3.11+ has `tomllib` in the stdlib for reading. Use `tomli` for 3.10
 - [ ] Print a clear status block on startup:
 
 ```
-WhisperFlow v0.1.0 — Startup Checks
+PushToType v0.1.0 — Startup Checks
   ✓ Audio:      libportaudio2 found
   ✓ Input:      /dev/input/ accessible (input group)
   ✓ Session:    X11 detected
@@ -194,13 +194,13 @@ WhisperFlow v0.1.0 — Startup Checks
 
 | # | Checkpoint | How to verify |
 |---|---|---|
-| 1 | Config file created | `whisperflow config` creates `~/.config/whisperflow/config.toml` |
-| 2 | Config loads correctly | `whisperflow config --show` prints merged config |
-| 3 | CLI flags override config | `whisperflow --model small.en` uses small.en even if config says base.en |
-| 4 | First-run works | Delete config file, run `whisperflow` — see welcome message, runs with defaults |
+| 1 | Config file created | `pushtotype config` creates `~/.config/pushtotype/config.toml` |
+| 2 | Config loads correctly | `pushtotype config --show` prints merged config |
+| 3 | CLI flags override config | `pushtotype --model small.en` uses small.en even if config says base.en |
+| 4 | First-run works | Delete config file, run `pushtotype` — see welcome message, runs with defaults |
 | 5 | Dep checks pass | Startup shows green checkmarks for all dependencies |
 | 6 | Dep check failures are helpful | Uninstall `xdotool`, start daemon — see clear error with fix instructions |
-| 7 | Logging works | `whisperflow -v` shows debug output; `whisperflow -q` shows only errors |
+| 7 | Logging works | `pushtotype -v` shows debug output; `pushtotype -q` shows only errors |
 | 8 | Daemon survives errors | Simulate a transcription error — daemon continues running |
 
 ---
@@ -209,8 +209,8 @@ WhisperFlow v0.1.0 — Startup Checks
 
 **You are ready to move to M5 when ALL of the following are true:**
 
-- [ ] `whisperflow config` walks through interactive setup and saves to TOML file
-- [ ] `whisperflow config --show` displays the effective config
+- [ ] `pushtotype config` walks through interactive setup and saves to TOML file
+- [ ] `pushtotype config --show` displays the effective config
 - [ ] Config file values are used when no CLI flags are provided
 - [ ] CLI flags override config file values
 - [ ] First-run experience shows a welcome message and continues with defaults
@@ -295,12 +295,12 @@ def capture_hotkey():
 
 | File | Action | Purpose |
 |---|---|---|
-| `src/whisperflow/config.py` | Create | Config loading, saving, validation, defaults |
-| `src/whisperflow/cli.py` | Modify | Add `config` subcommand, wire config into all commands |
-| `src/whisperflow/daemon.py` | Modify | Load config on startup, dependency checks, logging |
-| `src/whisperflow/hotkey.py` | Modify | Accept config values instead of hardcoded defaults |
-| `src/whisperflow/transcriber.py` | Modify | Accept config values |
-| `src/whisperflow/audio.py` | Modify | Accept config values |
-| `src/whisperflow/injector.py` | Modify | Accept config values |
+| `src/pushtotype/config.py` | Create | Config loading, saving, validation, defaults |
+| `src/pushtotype/cli.py` | Modify | Add `config` subcommand, wire config into all commands |
+| `src/pushtotype/daemon.py` | Modify | Load config on startup, dependency checks, logging |
+| `src/pushtotype/hotkey.py` | Modify | Accept config values instead of hardcoded defaults |
+| `src/pushtotype/transcriber.py` | Modify | Accept config values |
+| `src/pushtotype/audio.py` | Modify | Accept config values |
+| `src/pushtotype/injector.py` | Modify | Accept config values |
 | `tests/test_config.py` | Create | Config module tests |
 | `pyproject.toml` | Modify | Add `tomli`, `tomli-w` dependencies |

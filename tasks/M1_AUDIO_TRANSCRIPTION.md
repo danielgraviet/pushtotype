@@ -1,6 +1,6 @@
 # Milestone 1: Audio Capture + Transcription
 
-> **Goal:** Record audio from the microphone and transcribe it to text using a local Whisper model. The `whisperflow test` command works end-to-end.
+> **Goal:** Record audio from the microphone and transcribe it to text using a local Whisper model. The `pushtotype test` command works end-to-end.
 
 ---
 
@@ -51,7 +51,7 @@ dependencies = [
 - [ ] Verify imports: `python -c "import sounddevice; import faster_whisper; print('OK')"`
 
 ### 1.2 — Audio capture module (`audio.py`)
-- [ ] Create `src/whisperflow/audio.py` with:
+- [ ] Create `src/pushtotype/audio.py` with:
   - `list_devices()` → returns list of input audio devices with names and indices
   - `record(duration: float, device=None, sample_rate=16000)` → records for N seconds, returns numpy array (float32, mono, 16kHz)
   - Proper error handling if no audio device is available
@@ -64,7 +64,7 @@ dependencies = [
 - Return a numpy array, not a file — we'll pass this directly to faster-whisper
 
 ### 1.3 — Transcriber module (`transcriber.py`)
-- [ ] Create `src/whisperflow/transcriber.py` with:
+- [ ] Create `src/pushtotype/transcriber.py` with:
   - `Transcriber` class that wraps `faster-whisper`:
     - `__init__(model_name="base.en", device="auto", compute_type="float16")` — loads the model
     - `transcribe(audio: np.ndarray) -> str` — transcribes audio buffer to text
@@ -79,7 +79,7 @@ dependencies = [
 - Strip leading/trailing whitespace from output
 - Log model load time and transcription time for debugging
 
-### 1.4 — `whisperflow devices` command
+### 1.4 — `pushtotype devices` command
 - [ ] Implement in `cli.py`:
   - Lists all available audio input devices
   - Shows device index, name, default sample rate, max input channels
@@ -92,7 +92,7 @@ Audio Input Devices:
     3: USB Microphone (hw:2,0) [44100 Hz, 1 ch]
 ```
 
-### 1.5 — `whisperflow test` command
+### 1.5 — `pushtotype test` command
 - [ ] Implement in `cli.py`:
   - Prints "Recording for 5 seconds... speak now!"
   - Records 5 seconds of audio from default device
@@ -105,10 +105,10 @@ Audio Input Devices:
   - `--model NAME` — use a specific model (default `base.en`)
   - `--device INDEX` — use a specific audio device
 
-### 1.6 — `whisperflow download` command
+### 1.6 — `pushtotype download` command
 - [ ] Implement in `cli.py`:
-  - `whisperflow download` — downloads the default model (`base.en`)
-  - `whisperflow download small.en` — downloads a specific model
+  - `pushtotype download` — downloads the default model (`base.en`)
+  - `pushtotype download small.en` — downloads a specific model
   - Shows download progress or at minimum a "downloading..." message
   - Reports model size and location after download
 - [ ] This is a convenience command so users can pre-download before going offline
@@ -131,11 +131,11 @@ Audio Input Devices:
 | # | Checkpoint | How to verify |
 |---|---|---|
 | 1 | Audio deps installed | `python -c "import sounddevice; import faster_whisper"` |
-| 2 | Can list audio devices | `whisperflow devices` shows your mic |
-| 3 | Can record audio | Run `whisperflow test --duration 3`, see "Recording..." message |
+| 2 | Can list audio devices | `pushtotype devices` shows your mic |
+| 3 | Can record audio | Run `pushtotype test --duration 3`, see "Recording..." message |
 | 4 | Model downloads successfully | First run downloads `base.en`, subsequent runs load from cache |
-| 5 | Transcription works on GPU | `whisperflow test` shows `(cuda)` in timing output |
-| 6 | Transcription works on CPU | `whisperflow test --device cpu` falls back gracefully |
+| 5 | Transcription works on GPU | `pushtotype test` shows `(cuda)` in timing output |
+| 6 | Transcription works on CPU | `pushtotype test --device cpu` falls back gracefully |
 | 7 | Output is accurate | Say a clear sentence; transcription matches what you said |
 
 ---
@@ -144,9 +144,9 @@ Audio Input Devices:
 
 **You are ready to move to M2 when ALL of the following are true:**
 
-- [ ] `whisperflow test` records from your mic and prints accurate transcription
-- [ ] `whisperflow devices` lists available audio input devices
-- [ ] `whisperflow download` pre-downloads a model for offline use
+- [ ] `pushtotype test` records from your mic and prints accurate transcription
+- [ ] `pushtotype devices` lists available audio input devices
+- [ ] `pushtotype download` pre-downloads a model for offline use
 - [ ] Transcription uses CUDA on your RTX 2060 and reports timing under 1s for 5s audio
 - [ ] CPU fallback works when CUDA is not available
 - [ ] Tests pass in CI (with appropriate mocking for audio/GPU)
@@ -191,7 +191,7 @@ text = " ".join(segment.text for segment in segments).strip()
 
 ### Model storage location
 
-`faster-whisper` caches models in `~/.cache/huggingface/hub/` by default. The `whisperflow download` command triggers this same download.
+`faster-whisper` caches models in `~/.cache/huggingface/hub/` by default. The `pushtotype download` command triggers this same download.
 
 ---
 
@@ -199,9 +199,9 @@ text = " ".join(segment.text for segment in segments).strip()
 
 | File | Action | Purpose |
 |---|---|---|
-| `src/whisperflow/audio.py` | Create | Mic capture via sounddevice |
-| `src/whisperflow/transcriber.py` | Create | faster-whisper wrapper |
-| `src/whisperflow/cli.py` | Modify | Add `test`, `devices`, `download` commands |
+| `src/pushtotype/audio.py` | Create | Mic capture via sounddevice |
+| `src/pushtotype/transcriber.py` | Create | faster-whisper wrapper |
+| `src/pushtotype/cli.py` | Modify | Add `test`, `devices`, `download` commands |
 | `tests/test_audio.py` | Create | Audio module tests |
 | `tests/test_transcriber.py` | Create | Transcriber module tests |
 | `pyproject.toml` | Modify | Add new dependencies |

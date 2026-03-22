@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
-from whisperflow.session import detect_session
+from pushtotype.session import detect_session
 
 
 def test_detect_x11_from_env():

@@ -25,7 +25,7 @@ By completing this milestone you will understand:
 ## Tasks
 
 ### 0.1 — Create the GitHub repo
-- [ ] Create a new public repo named `whisperflow` on GitHub
+- [ ] Create a new public repo named `pushtotype` on GitHub
 - [ ] Initialize with MIT `LICENSE` file
 - [ ] Add a `.gitignore` for Python (use GitHub's Python template)
 
@@ -33,11 +33,11 @@ By completing this milestone you will understand:
 - [ ] Create the following structure:
 
 ```
-whisperflow/
+pushtotype/
 ├── src/
-│   └── whisperflow/
+│   └── pushtotype/
 │       ├── __init__.py          # __version__ = "0.1.0"
-│       └── __main__.py          # print("WhisperFlow is not yet implemented")
+│       └── __main__.py          # print("PushToType is not yet implemented")
 ├── tests/
 │   └── test_smoke.py            # assert import works
 ├── assets/                      # empty for now, will hold audio feedback files
@@ -71,15 +71,15 @@ dev = ["ruff", "pytest", "pytest-asyncio"]
 
 ```toml
 [project.scripts]
-whisperflow = "whisperflow.cli:main"
+pushtotype = "pushtotype.cli:main"
 ```
 
 ### 0.4 — Minimal CLI
-- [ ] Create `src/whisperflow/cli.py` with a `click` group:
-  - `whisperflow` (root) — prints version and help
-  - `whisperflow test` — prints "Not yet implemented" placeholder
-  - `whisperflow devices` — prints "Not yet implemented" placeholder
-- [ ] Verify `whisperflow --help` works after install
+- [ ] Create `src/pushtotype/cli.py` with a `click` group:
+  - `pushtotype` (root) — prints version and help
+  - `pushtotype test` — prints "Not yet implemented" placeholder
+  - `pushtotype devices` — prints "Not yet implemented" placeholder
+- [ ] Verify `pushtotype --help` works after install
 
 ### 0.5 — Linting and formatting
 - [ ] Add `ruff` config to `pyproject.toml`:
@@ -97,8 +97,8 @@ select = ["E", "F", "I", "N", "W", "UP"]
 
 ### 0.6 — Tests
 - [ ] Write `tests/test_smoke.py`:
-  - Test that `import whisperflow` works
-  - Test that `whisperflow.__version__` is a string
+  - Test that `import pushtotype` works
+  - Test that `pushtotype.__version__` is a string
 - [ ] Run `pytest` — should pass
 
 ### 0.7 — GitHub Actions CI
@@ -116,7 +116,7 @@ select = ["E", "F", "I", "N", "W", "UP"]
   - "Work in progress" badge/notice
   - Vision statement (from PROJECT_PLAN.md)
   - Planned features list
-  - Installation placeholder (`pip install whisperflow` — coming soon)
+  - Installation placeholder (`pip install pushtotype` — coming soon)
   - Contributing section pointing to CONTRIBUTING.md (can be a stub)
   - License
 
@@ -128,9 +128,9 @@ Use these to verify you're on track:
 
 | # | Checkpoint | How to verify |
 |---|---|---|
-| 1 | Repo exists and is public | Visit `github.com/yourname/whisperflow` |
+| 1 | Repo exists and is public | Visit `github.com/yourname/pushtotype` |
 | 2 | Package installs locally | `pip install -e ".[dev]"` exits cleanly |
-| 3 | CLI runs | `whisperflow --help` prints help text with version |
+| 3 | CLI runs | `pushtotype --help` prints help text with version |
 | 4 | Linting passes | `ruff check . && ruff format --check .` exits 0 |
 | 5 | Tests pass | `pytest` shows 1+ tests passed |
 | 6 | CI is green | GitHub Actions badge shows passing |
@@ -141,7 +141,7 @@ Use these to verify you're on track:
 
 **You are ready to move to M1 when ALL of the following are true:**
 
-- [ ] `git clone` → `pip install -e ".[dev]"` → `whisperflow --help` works on a fresh machine
+- [ ] `git clone` → `pip install -e ".[dev]"` → `pushtotype --help` works on a fresh machine
 - [ ] `pytest` passes with at least 1 smoke test
 - [ ] GitHub Actions CI is green on `main`
 - [ ] `ruff check` and `ruff format --check` produce zero warnings
@@ -170,9 +170,9 @@ Use these to verify you're on track:
 
 | File | Purpose |
 |---|---|
-| `src/whisperflow/__init__.py` | Package init, `__version__` |
-| `src/whisperflow/__main__.py` | `python -m whisperflow` support |
-| `src/whisperflow/cli.py` | Click CLI group with placeholder commands |
+| `src/pushtotype/__init__.py` | Package init, `__version__` |
+| `src/pushtotype/__main__.py` | `python -m pushtotype` support |
+| `src/pushtotype/cli.py` | Click CLI group with placeholder commands |
 | `tests/test_smoke.py` | Import and version smoke test |
 | `pyproject.toml` | Build config, deps, entry points |
 | `.github/workflows/ci.yml` | CI pipeline |

@@ -1,19 +1,19 @@
 # Milestone 5: Distribution & Documentation
 
-> **Goal:** WhisperFlow is published on PyPI, has complete documentation, and is ready for other people to install and use.
+> **Goal:** PushToType is published on PyPI, has complete documentation, and is ready for other people to install and use.
 
 ---
 
 ## Why This Phase Matters
 
-A tool that only works on your machine isn't a project — it's a script. This phase makes WhisperFlow real: installable with one command, documented well enough that a stranger can set it up, and presented in a way that makes people want to try it. The README is your product's front door. The demo GIF is your elevator pitch. The PyPI listing is your distribution channel. This is where your project goes from "works for me" to "works for everyone."
+A tool that only works on your machine isn't a project — it's a script. This phase makes PushToType real: installable with one command, documented well enough that a stranger can set it up, and presented in a way that makes people want to try it. The README is your product's front door. The demo GIF is your elevator pitch. The PyPI listing is your distribution channel. This is where your project goes from "works for me" to "works for everyone."
 
 ---
 
 ## Prerequisites
 
 - M4 is complete (config file, first-run experience, dependency checks, stable daemon)
-- You've been using WhisperFlow daily for at least a few sessions
+- You've been using PushToType daily for at least a few sessions
 - You have a list of bugs/friction from dogfooding (fix the critical ones first)
 
 ---
@@ -44,7 +44,7 @@ By completing this milestone you will understand:
 
 ```toml
 [project]
-name = "whisperflow"
+name = "pushtotype"
 version = "0.1.0"
 description = "Real-time speech-to-text for Linux. Hold a hotkey, speak, release — your words appear wherever your cursor is."
 readme = "README.md"
@@ -66,10 +66,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourname/whisperflow"
-Documentation = "https://github.com/yourname/whisperflow#readme"
-Repository = "https://github.com/yourname/whisperflow"
-Issues = "https://github.com/yourname/whisperflow/issues"
+Homepage = "https://github.com/yourname/pushtotype"
+Documentation = "https://github.com/yourname/pushtotype#readme"
+Repository = "https://github.com/yourname/pushtotype"
+Issues = "https://github.com/yourname/pushtotype/issues"
 ```
 
 - [ ] Verify `assets/` directory is included in the package (for feedback sounds)
@@ -77,8 +77,8 @@ Issues = "https://github.com/yourname/whisperflow/issues"
 
 ```toml
 [tool.hatch.build.targets.wheel]
-packages = ["src/whisperflow"]
-artifacts = ["src/whisperflow/assets/*"]
+packages = ["src/pushtotype"]
+artifacts = ["src/pushtotype/assets/*"]
 ```
 
 ### 5.3 — Publish to TestPyPI first
@@ -87,8 +87,8 @@ artifacts = ["src/whisperflow/assets/*"]
 - [ ] Test install from TestPyPI in a fresh venv:
 
 ```bash
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ whisperflow
-whisperflow --help
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pushtotype
+pushtotype --help
 ```
 
 - [ ] Verify the CLI entry point works
@@ -101,11 +101,11 @@ whisperflow --help
 - [ ] Verify install from PyPI in a fresh venv:
 
 ```bash
-pip install whisperflow
-whisperflow --help
+pip install pushtotype
+pushtotype --help
 ```
 
-- [ ] Also verify `pipx install whisperflow` and `uv tool install whisperflow` work
+- [ ] Also verify `pipx install pushtotype` and `uv tool install pushtotype` work
 
 ### 5.5 — README.md (complete rewrite)
 - [ ] Structure the README with these sections:
@@ -122,7 +122,7 @@ whisperflow --help
 **Quick Start:**
 ```bash
 # Install
-pip install whisperflow
+pip install pushtotype
 
 # System dependencies
 sudo apt install libportaudio2 xdotool xclip
@@ -132,10 +132,10 @@ sudo usermod -aG input $USER
 # Log out and back in
 
 # Run setup wizard
-whisperflow config
+pushtotype config
 
 # Start!
-whisperflow
+pushtotype
 ```
 
 **How it works:**
@@ -178,7 +178,7 @@ whisperflow
 - [ ] Install a screen recorder that captures to GIF (e.g., `peek`, `gifcap`, or record + convert)
 - [ ] Script the demo:
   1. Show a text editor and terminal side by side
-  2. Terminal shows `whisperflow` starting up with green checkmarks
+  2. Terminal shows `pushtotype` starting up with green checkmarks
   3. Switch focus to text editor
   4. Hold hotkey (show a visual indicator or just the terminal logging)
   5. Speak a clear sentence
@@ -223,11 +223,11 @@ whisperflow
 | # | Checkpoint | How to verify |
 |---|---|---|
 | 1 | Package builds | `python -m build` produces `.whl` and `.tar.gz` in `dist/` |
-| 2 | TestPyPI install works | Fresh venv, `pip install` from TestPyPI, `whisperflow --help` runs |
-| 3 | PyPI install works | `pip install whisperflow` in fresh venv, full end-to-end test |
-| 4 | pipx works | `pipx install whisperflow` → `whisperflow --help` |
+| 2 | TestPyPI install works | Fresh venv, `pip install` from TestPyPI, `pushtotype --help` runs |
+| 3 | PyPI install works | `pip install pushtotype` in fresh venv, full end-to-end test |
+| 4 | pipx works | `pipx install pushtotype` → `pushtotype --help` |
 | 5 | README is complete | All sections present, no placeholder text, demo GIF displays |
-| 6 | Demo GIF shows the magic | Someone watching the GIF understands what WhisperFlow does in 10 seconds |
+| 6 | Demo GIF shows the magic | Someone watching the GIF understands what PushToType does in 10 seconds |
 | 7 | Troubleshooting covers common issues | Test each troubleshooting scenario, verify the fix works |
 | 8 | A friend can install it | Hand the README to someone unfamiliar, they get it running without your help |
 
@@ -235,10 +235,10 @@ whisperflow
 
 ## Definition of Done
 
-**WhisperFlow v0.1.0 is ready for release when ALL of the following are true:**
+**PushToType v0.1.0 is ready for release when ALL of the following are true:**
 
-- [ ] Published on PyPI and installable via `pip install whisperflow`
-- [ ] `pipx install whisperflow` and `uv tool install whisperflow` also work
+- [ ] Published on PyPI and installable via `pip install pushtotype`
+- [ ] `pipx install pushtotype` and `uv tool install pushtotype` also work
 - [ ] README has: description, demo GIF, quick start, config reference, troubleshooting
 - [ ] CONTRIBUTING.md exists with dev setup instructions
 - [ ] GitHub issues created for future roadmap items
@@ -286,16 +286,16 @@ twine upload dist/*
 
 ```bash
 # Create a fresh venv
-python -m venv /tmp/test-whisperflow
-source /tmp/test-whisperflow/bin/activate
+python -m venv /tmp/test-pushtotype
+source /tmp/test-pushtotype/bin/activate
 
 # Install from PyPI
-pip install whisperflow
+pip install pushtotype
 
 # Test
-whisperflow --help
-whisperflow test --duration 3
-whisperflow devices
+pushtotype --help
+pushtotype test --duration 3
+pushtotype devices
 ```
 
 ### GIF recording with peek
@@ -309,10 +309,10 @@ sudo apt install peek
 ### Badge markdown for README
 
 ```markdown
-[![PyPI version](https://img.shields.io/pypi/v/whisperflow)](https://pypi.org/project/whisperflow/)
-[![Python](https://img.shields.io/pypi/pyversions/whisperflow)](https://pypi.org/project/whisperflow/)
+[![PyPI version](https://img.shields.io/pypi/v/pushtotype)](https://pypi.org/project/pushtotype/)
+[![Python](https://img.shields.io/pypi/pyversions/pushtotype)](https://pypi.org/project/pushtotype/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/yourname/whisperflow/actions/workflows/ci.yml/badge.svg)](https://github.com/yourname/whisperflow/actions)
+[![CI](https://github.com/yourname/pushtotype/actions/workflows/ci.yml/badge.svg)](https://github.com/yourname/pushtotype/actions)
 ```
 
 ---

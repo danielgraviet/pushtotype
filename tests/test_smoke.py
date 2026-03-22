@@ -1,9 +1,9 @@
-import whisperflow
+import pushtotype
 
 
 def test_import():
-    assert whisperflow is not None
+    assert pushtotype is not None
 
 
 def test_version():
-    assert isinstance(whisperflow.__version__, str)
+    assert isinstance(pushtotype.__version__, str)

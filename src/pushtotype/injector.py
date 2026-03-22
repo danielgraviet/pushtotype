@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import subprocess
 
-from whisperflow.session import detect_session
+from pushtotype.session import detect_session
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +62,7 @@ class TextInjector:
 
     def _inject_x11(self, text: str) -> None:
         import time as _time
+
         t0 = _time.perf_counter()
         _run(["xdotool", "type", "--delay", "0", "--clearmodifiers", "--", text])
         logger.debug("xdotool type: %.3fs", _time.perf_counter() - t0)

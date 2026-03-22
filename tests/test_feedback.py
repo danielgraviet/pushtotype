@@ -7,7 +7,7 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 
-from whisperflow.feedback import (
+from pushtotype.feedback import (
     SAMPLE_RATE,
     _make_tone,
     play_error_sound,
@@ -51,13 +51,13 @@ def test_make_tone_fade_reduces_endpoints():
 
 @pytest.mark.parametrize("fn", [play_start_sound, play_stop_sound, play_error_sound])
 def test_disabled_prevents_playback(fn):
-    with patch("whisperflow.feedback.sd.play") as mock_play:
+    with patch("pushtotype.feedback.sd.play") as mock_play:
         fn(enabled=False)
     mock_play.assert_not_called()
 
 
 @pytest.mark.parametrize("fn", [play_start_sound, play_stop_sound, play_error_sound])
 def test_enabled_triggers_playback(fn):
-    with patch("whisperflow.feedback.sd.play") as mock_play:
+    with patch("pushtotype.feedback.sd.play") as mock_play:
         fn(enabled=True)
     mock_play.assert_called_once()

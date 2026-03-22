@@ -6,7 +6,7 @@
 
 ## Why This Phase Matters
 
-This is the milestone where WhisperFlow becomes actually usable for daily work. Up until now, transcriptions were just printed to the terminal. After this phase, you can hold a hotkey in any app, speak, and your words appear right where your cursor is. This is the "magic moment" — the feature that makes people say "I need this."
+This is the milestone where PushToType becomes actually usable for daily work. Up until now, transcriptions were just printed to the terminal. After this phase, you can hold a hotkey in any app, speak, and your words appear right where your cursor is. This is the "magic moment" — the feature that makes people say "I need this."
 
 ---
 
@@ -36,7 +36,7 @@ By completing this milestone you will understand:
 ## Tasks
 
 ### 3.1 — Session detection module (`session.py`)
-- [ ] Create `src/whisperflow/session.py` with:
+- [ ] Create `src/pushtotype/session.py` with:
   - `detect_session() -> str` — returns `"x11"` or `"wayland"`
   - Reads `$XDG_SESSION_TYPE` environment variable
   - Falls back to checking for `$WAYLAND_DISPLAY` (set on Wayland sessions)
@@ -47,7 +47,7 @@ By completing this milestone you will understand:
   - This will be used for terminal paste detection
 
 ### 3.2 — Text injector module (`injector.py`)
-- [ ] Create `src/whisperflow/injector.py` with:
+- [ ] Create `src/pushtotype/injector.py` with:
   - `TextInjector` class:
     - `__init__(method="auto", shift_paste_apps=None)` — configures injection method
     - `inject(text: str)` — pastes text into the focused application
@@ -113,7 +113,7 @@ DEFAULT_SHIFT_PASTE_APPS = [
 ### 3.5 — Clipboard safety
 - [ ] Before injecting, save the current clipboard
 - [ ] After injecting (with a small delay), restore the previous clipboard
-- [ ] This prevents WhisperFlow from destroying whatever the user had copied
+- [ ] This prevents PushToType from destroying whatever the user had copied
 - [ ] If clipboard save/restore fails, proceed anyway — it's not critical
 
 ### 3.6 — End-to-end testing (manual)
@@ -143,13 +143,13 @@ DEFAULT_SHIFT_PASTE_APPS = [
 
 | # | Checkpoint | How to verify |
 |---|---|---|
-| 1 | Session detection works | `python -c "from whisperflow.session import detect_session; print(detect_session())"` prints `x11` |
+| 1 | Session detection works | `python -c "from pushtotype.session import detect_session; print(detect_session())"` prints `x11` |
 | 2 | System tools available | `which xdotool xclip` returns paths (X11) |
 | 3 | Clipboard copy works | Programmatically copy text, then Ctrl+V in an editor — text appears |
 | 4 | Text injection works in editor | Hold hotkey in a text editor, speak, release — words appear at cursor |
 | 5 | Text injection works in browser | Hold hotkey in browser search/input, speak, release — words appear |
 | 6 | Terminal paste works | Hold hotkey in a terminal, speak, release — words appear (via Ctrl+Shift+V) |
-| 7 | Clipboard is preserved | Copy something to clipboard, use WhisperFlow, then Ctrl+V — original clipboard is restored |
+| 7 | Clipboard is preserved | Copy something to clipboard, use PushToType, then Ctrl+V — original clipboard is restored |
 | 8 | Missing tools handled | Uninstall `xdotool`, run daemon — get clear error, not a crash |
 
 ---
@@ -242,8 +242,8 @@ This is critical. If the user is still holding modifier keys (like the Super key
 
 | File | Action | Purpose |
 |---|---|---|
-| `src/whisperflow/session.py` | Create | X11/Wayland detection |
-| `src/whisperflow/injector.py` | Create | Text injection via clipboard+paste |
-| `src/whisperflow/daemon.py` | Modify | Wire injector into the transcription flow |
+| `src/pushtotype/session.py` | Create | X11/Wayland detection |
+| `src/pushtotype/injector.py` | Create | Text injection via clipboard+paste |
+| `src/pushtotype/daemon.py` | Modify | Wire injector into the transcription flow |
 | `tests/test_injector.py` | Create | Injector tests with mocked subprocess |
 | `tests/test_session.py` | Create | Session detection tests |

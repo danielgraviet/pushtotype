@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from whisperflow.hotkey import HotkeyListener, find_keyboards, parse_hotkey
+from pushtotype.hotkey import HotkeyListener, find_keyboards, parse_hotkey
 
 # ---------------------------------------------------------------------------
 # parse_hotkey
@@ -34,7 +34,7 @@ def test_parse_hotkey_unknown_key():
 
 
 def test_find_keyboards_returns_list():
-    with patch("whisperflow.hotkey.evdev") as mock_evdev:
+    with patch("pushtotype.hotkey.evdev") as mock_evdev:
         mock_evdev.list_devices.return_value = []
         result = find_keyboards()
     assert isinstance(result, list)
@@ -42,7 +42,7 @@ def test_find_keyboards_returns_list():
 
 def test_find_keyboards_filters_non_keyboards():
     """A device without the standard keyboard keys should be excluded."""
-    with patch("whisperflow.hotkey.evdev") as mock_evdev:
+    with patch("pushtotype.hotkey.evdev") as mock_evdev:
         from evdev import ecodes
 
         fake_dev = MagicMock()

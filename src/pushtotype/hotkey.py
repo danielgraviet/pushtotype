@@ -51,6 +51,24 @@ if ecodes:
             _KEY_NAME_MAP[_c] = getattr(ecodes, _key_attr)
 
 
+def normalize_hotkey_key(name: str) -> str:
+    """Convert an evdev key name to the format expected by parse_hotkey.
+
+    Handles both config-file format (``KEY_RIGHTCTRL``) and human format
+    (``rightctrl``) so either can be stored in config and passed through here.
+
+    Examples::
+
+        normalize_hotkey_key("KEY_RIGHTCTRL") -> "rightctrl"
+        normalize_hotkey_key("KEY_A")         -> "a"
+        normalize_hotkey_key("rightctrl")     -> "rightctrl"
+    """
+    n = name.strip()
+    if n.upper().startswith("KEY_"):
+        n = n[4:]
+    return n.lower()
+
+
 def parse_hotkey(hotkey_str: str) -> frozenset[int]:
     """Parse a hotkey string like 'Ctrl+Shift+S' into a frozenset of evdev keycodes.
 

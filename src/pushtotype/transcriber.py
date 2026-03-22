@@ -55,7 +55,7 @@ class Transcriber:
     def transcribe(self, audio: np.ndarray) -> str:
         """Transcribe a float32 mono 16 kHz numpy array to text."""
         t0 = time.perf_counter()
-        segments, _info = self._model.transcribe(audio, language="en")
+        segments, _info = self._model.transcribe(audio)
         text = " ".join(seg.text for seg in segments).strip()
         elapsed = time.perf_counter() - t0
         logger.debug("Transcribed in %.2fs", elapsed)

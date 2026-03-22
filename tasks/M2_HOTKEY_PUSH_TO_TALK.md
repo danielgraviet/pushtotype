@@ -6,13 +6,13 @@
 
 ## Why This Phase Matters
 
-This phase turns WhisperFlow from a "run a command and wait" tool into a background daemon that responds to your input in real-time. The push-to-talk interaction model is the core UX — it's what makes this feel like a product instead of a script. Getting `evdev` right here also guarantees Wayland compatibility from day one.
+This phase turns PushToType from a "run a command and wait" tool into a background daemon that responds to your input in real-time. The push-to-talk interaction model is the core UX — it's what makes this feel like a product instead of a script. Getting `evdev` right here also guarantees Wayland compatibility from day one.
 
 ---
 
 ## Prerequisites
 
-- M1 is complete (`whisperflow test` records and transcribes successfully)
+- M1 is complete (`pushtotype test` records and transcribes successfully)
 - Your user is in the `input` group:
 
 ```bash
@@ -50,7 +50,7 @@ By completing this milestone you will understand:
 - [ ] If empty list or permission error → confirm `input` group membership
 
 ### 2.2 — Hotkey listener module (`hotkey.py`)
-- [ ] Create `src/whisperflow/hotkey.py` with:
+- [ ] Create `src/pushtotype/hotkey.py` with:
   - `find_keyboards()` → scans `/dev/input/` and returns all devices that have `EV_KEY` capability with standard keyboard keys (filter out mice, gamepads, etc.)
   - `HotkeyListener` class:
     - `__init__(keys: list[str], on_press: Callable, on_release: Callable)` — configures the hotkey combo
@@ -70,7 +70,7 @@ By completing this milestone you will understand:
 - Ignore key repeat events (`event.value == 2`) — only care about down (1) and up (0)
 
 ### 2.3 — Audio feedback module (`feedback.py`)
-- [ ] Create `src/whisperflow/feedback.py` with:
+- [ ] Create `src/pushtotype/feedback.py` with:
   - `play_start_sound()` — plays a short "start recording" beep
   - `play_stop_sound()` — plays a short "stop recording" beep
   - `play_error_sound()` — plays a short error tone
@@ -83,11 +83,11 @@ By completing this milestone you will understand:
 - [ ] Add an `enabled` flag so feedback can be turned off
 
 ### 2.4 — Daemon loop (`daemon.py`)
-- [ ] Create `src/whisperflow/daemon.py` with the main orchestration:
+- [ ] Create `src/pushtotype/daemon.py` with the main orchestration:
   - On startup:
     - Load the Whisper model (print loading time)
     - Find keyboard devices
-    - Print "WhisperFlow is running. Press [hotkey] to record. Ctrl+C to quit."
+    - Print "PushToType is running. Press [hotkey] to record. Ctrl+C to quit."
   - On hotkey press:
     - Play start sound
     - Begin recording audio
@@ -107,13 +107,13 @@ By completing this milestone you will understand:
 
 ### 2.5 — Wire up the CLI
 - [ ] Update `cli.py`:
-  - `whisperflow` (root command, no subcommand) → starts the daemon
+  - `pushtotype` (root command, no subcommand) → starts the daemon
   - Accept flags: `--model`, `--hotkey`, `--device` (audio device)
   - Default hotkey: `Super+Shift+S` (configurable)
-- [ ] `whisperflow` should print clear startup info:
+- [ ] `pushtotype` should print clear startup info:
 
 ```
-WhisperFlow v0.1.0
+PushToType v0.1.0
   Model:    base.en (cuda, float16)
   Hotkey:   Super+Shift+S
   Audio:    HDA Intel PCH (16000 Hz)
@@ -159,7 +159,7 @@ Ready. Hold [Super+Shift+S] to speak. Ctrl+C to quit.
 
 **You are ready to move to M3 when ALL of the following are true:**
 
-- [ ] `whisperflow` starts a daemon that listens for a global hotkey
+- [ ] `pushtotype` starts a daemon that listens for a global hotkey
 - [ ] Holding the hotkey records audio from your mic
 - [ ] Releasing the hotkey transcribes and prints the result to stdout
 - [ ] Audio feedback (start/stop beeps) plays correctly
@@ -237,10 +237,10 @@ The daemon needs to:
 
 | File | Action | Purpose |
 |---|---|---|
-| `src/whisperflow/hotkey.py` | Create | evdev global hotkey listener |
-| `src/whisperflow/feedback.py` | Create | Audio feedback tones |
-| `src/whisperflow/daemon.py` | Create | Main orchestration loop |
-| `src/whisperflow/cli.py` | Modify | Wire `whisperflow` root command to daemon |
+| `src/pushtotype/hotkey.py` | Create | evdev global hotkey listener |
+| `src/pushtotype/feedback.py` | Create | Audio feedback tones |
+| `src/pushtotype/daemon.py` | Create | Main orchestration loop |
+| `src/pushtotype/cli.py` | Modify | Wire `pushtotype` root command to daemon |
 | `tests/test_hotkey.py` | Create | Hotkey listener tests |
 | `tests/test_feedback.py` | Create | Feedback module tests |
 | `pyproject.toml` | Modify | Add `evdev` dependency |

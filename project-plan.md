@@ -1,4 +1,4 @@
-# WhisperFlow — Project Plan
+# PushToType — Project Plan
 
 > A real-time speech-to-text tool for Linux that types anywhere.
 > Open-source alternative to OpenAI's Whisper Flow, which has no Linux support.
@@ -9,7 +9,7 @@
 
 **One sentence:** Hold a hotkey, speak, release — your words appear wherever your cursor is.
 
-WhisperFlow captures microphone audio while a global hotkey is held, transcribes it using a local Whisper model on your GPU/CPU, and pastes the result into whatever application has focus — terminal, browser, editor, search bar, anything.
+PushToType captures microphone audio while a global hotkey is held, transcribes it using a local Whisper model on your GPU/CPU, and pastes the result into whatever application has focus — terminal, browser, editor, search bar, anything.
 
 ---
 
@@ -50,14 +50,14 @@ Default: `base.en` with `float16` on CUDA. Falls back to CPU automatically if no
 
 5. **Audio feedback** — subtle start/stop sounds so you know when recording is active.
 
-6. **Configuration file** — TOML config at `~/.config/whisperflow/config.toml` for hotkey, model size, audio device, etc.
+6. **Configuration file** — TOML config at `~/.config/pushtotype/config.toml` for hotkey, model size, audio device, etc.
 
 7. **CLI interface (primary):**
-   - `whisperflow` — start the daemon (listens for hotkey)
-   - `whisperflow config` — interactive config setup
-   - `whisperflow test` — record a short clip and transcribe it (verify setup)
-   - `whisperflow devices` — list available audio input devices
-   - `whisperflow download` — pre-download a model
+   - `pushtotype` — start the daemon (listens for hotkey)
+   - `pushtotype config` — interactive config setup
+   - `pushtotype test` — record a short clip and transcribe it (verify setup)
+   - `pushtotype devices` — list available audio input devices
+   - `pushtotype download` — pre-download a model
 
 8. **System tray indicator** (stretch for v1) — minimal tray icon showing status (idle / recording / transcribing). Not a full GUI — just visual feedback.
 
@@ -66,7 +66,7 @@ Default: `base.en` with `float16` on CUDA. Falls back to CPU automatically if no
 - **English only** for v1
 - **Linux only** (X11 and Wayland)
 - **Python 3.10+**
-- **Installable via `pip install whisperflow`** (also works with `pipx` and `uv tool install`)
+- **Installable via `pip install pushtotype`** (also works with `pipx` and `uv tool install`)
 - **Open source from day one** — MIT license, GitHub repo
 - **No network required** — fully offline after initial model download
 
@@ -98,7 +98,7 @@ These are explicitly out of scope. They may become future features, but they wil
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│                   whisperflow daemon                  │
+│                   pushtotype daemon                  │
 │                                                      │
 │  ┌───────────┐   ┌───────────┐   ┌───────────────┐  │
 │  │  Hotkey    │──▶│  Audio    │──▶│  Transcriber  │  │
@@ -149,7 +149,7 @@ These are explicitly out of scope. They may become future features, but they wil
 
 **Requirements for users:**
 - User must be in the `input` group: `sudo usermod -aG input $USER` (then log out/in)
-- `whisperflow` auto-detects keyboard devices on startup
+- `pushtotype` auto-detects keyboard devices on startup
 - Hotkey uses key down/up events for push-to-talk (not key combos that need to be pressed simultaneously, though we support modifier+key combos too)
 
 **Why evdev over alternatives:**
@@ -193,7 +193,7 @@ These must be installed by the user (not pip-installable):
 
 ### M0: Project Setup (Day 1)
 - [ ] Create GitHub repo with MIT license
-- [ ] Set up project structure (`src/whisperflow/`)
+- [ ] Set up project structure (`src/pushtotype/`)
 - [ ] `pyproject.toml` with dependencies and entry points
 - [ ] Basic README with project description and vision
 - [ ] CI: GitHub Actions for linting (`ruff`) and tests (`pytest`)
@@ -202,9 +202,9 @@ These must be installed by the user (not pip-installable):
 - [ ] Record audio from default mic for N seconds → numpy array
 - [ ] Transcribe with `faster-whisper` (CUDA, `base.en`)
 - [ ] Automatic CPU fallback if no CUDA available
-- [ ] `whisperflow test` command works end-to-end
-- [ ] `whisperflow devices` lists audio inputs
-- [ ] `whisperflow download [model]` pre-downloads a model
+- [ ] `pushtotype test` command works end-to-end
+- [ ] `pushtotype devices` lists audio inputs
+- [ ] `pushtotype download [model]` pre-downloads a model
 
 ### M2: Global Hotkey + Push-to-Talk
 - [ ] `evdev` keyboard device auto-detection
@@ -223,13 +223,13 @@ These must be installed by the user (not pip-installable):
 
 ### M4: Configuration & Polish
 - [ ] TOML config file with sensible defaults
-- [ ] `whisperflow config` interactive setup (pick device, model, hotkey)
+- [ ] `pushtotype config` interactive setup (pick device, model, hotkey)
 - [ ] Model download management with progress bar on first run
 - [ ] Graceful error messages for missing system deps
 - [ ] Daemon mode: runs in background, logs to file
 
 ### M5: Distribution & Docs
-- [ ] Publish to PyPI as `whisperflow`
+- [ ] Publish to PyPI as `pushtotype`
 - [ ] README: installation, quickstart, configuration reference, troubleshooting
 - [ ] CONTRIBUTING.md
 - [ ] Record a demo GIF/video for the README
@@ -240,11 +240,11 @@ These must be installed by the user (not pip-installable):
 ## Project Structure
 
 ```
-whisperflow/
+pushtotype/
 ├── src/
-│   └── whisperflow/
+│   └── pushtotype/
 │       ├── __init__.py          # version
-│       ├── __main__.py          # python -m whisperflow
+│       ├── __main__.py          # python -m pushtotype
 │       ├── cli.py               # click CLI commands
 │       ├── config.py            # TOML config loading/saving/defaults
 │       ├── audio.py             # mic capture via sounddevice
@@ -275,7 +275,7 @@ whisperflow/
 ## Configuration Reference
 
 ```toml
-# ~/.config/whisperflow/config.toml
+# ~/.config/pushtotype/config.toml
 
 [general]
 language = "en"
@@ -283,11 +283,11 @@ language = "en"
 [hotkey]
 # Key combo for push-to-talk
 # Use evdev key names: KEY_LEFTMETA, KEY_LEFTSHIFT, KEY_S, etc.
-# Run `whisperflow config` to set this interactively
+# Run `pushtotype config` to set this interactively
 keys = ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"]
 
 [audio]
-device = "default"          # or device name/index from `whisperflow devices`
+device = "default"          # or device name/index from `pushtotype devices`
 sample_rate = 16000
 
 [model]
@@ -313,7 +313,7 @@ shift_paste_apps = ["gnome-terminal", "xfce4-terminal", "tilix"]
 
 1. **Terminal paste detection** — terminals typically use Ctrl+Shift+V instead of Ctrl+V. We could detect the focused window class and switch behavior, or just document it. What's the best UX here?
 
-2. **Model download UX** — `faster-whisper` auto-downloads from HuggingFace on first use. Should we wrap this with a progress bar in `whisperflow download`, or let it happen on first transcription?
+2. **Model download UX** — `faster-whisper` auto-downloads from HuggingFace on first use. Should we wrap this with a progress bar in `pushtotype download`, or let it happen on first transcription?
 
 3. **Latency budget** — with `base.en` on the RTX 2060, transcription itself is ~0.7s for 10s of audio. Total end-to-end (stop recording → text appears) should be under 1.5s. Is that acceptable?
 

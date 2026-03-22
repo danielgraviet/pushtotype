@@ -1,16 +1,12 @@
----
-name: X11 text injection — xclip hang diagnosis and fix
-description: How we diagnosed and fixed 5-8s injection latency caused by xclip hanging on clipboard write
-type: project
----
+# X11 Text Injection — xclip Hang Diagnosis and Fix
 
 ## The Problem
 
-End-to-end latency from hotkey release to text appearing was 5-8 seconds, despite transcription being fast (0.2-0.5s). The user's first clue was the printed stats: `transcribed in 0.54s` — yet the text took several more seconds to appear.
+End-to-end latency from hotkey release to text appearing was 5-8 seconds, despite transcription being fast (0.2-0.5s). The printed stats showed `transcribed in 0.54s` — yet the text took several more seconds to appear, pointing to the injection step.
 
 ## Diagnosis
 
-Added per-step debug timing inside `_inject_x11()` and a `-v/--verbose` CLI flag that enables DEBUG logging. Output immediately revealed the culprit:
+Added per-step `time.perf_counter()` timing inside `_inject_x11()` and a `-v/--verbose` CLI flag to enable DEBUG logging on demand. Output immediately revealed the culprit:
 
 ```
 whisperflow.transcriber DEBUG Transcribed in 0.24s
@@ -20,37 +16,39 @@ whisperflow.injector DEBUG paste key: 0.002s
 whisperflow.injector DEBUG inject total: 5.008s
 ```
 
-The `xclip` write was taking **exactly 5.006s** — the subprocess timeout value. xclip was hanging, being killed by the timeout, and the clipboard write was silently failing (the paste that followed was a no-op).
+The `xclip` write took **exactly 5.006s** — the subprocess timeout value. xclip was hanging, getting killed by the timeout, and the clipboard write was silently failing. The paste that followed was a no-op.
+
+**Key tell: a step taking exactly N seconds where N is the timeout = subprocess hanging, not just slow.**
 
 ## Root Cause
 
-`xclip -selection clipboard` forks a daemon process to "own" the CLIPBOARD selection and serve SelectionRequest events from apps. On this system, xclip was not forking/exiting properly and the parent process hung until the timeout killed it. The exact reason xclip hung (clipboard manager conflict, display connection issue, etc.) was not fully traced — switching away was faster and more reliable.
+`xclip -selection clipboard` forks a daemon to own the CLIPBOARD selection and serve SelectionRequest events. On this system it was not forking/exiting properly — the parent process hung until timeout. The exact trigger (clipboard manager conflict, display issue, etc.) wasn't traced further since switching away was faster and more reliable.
 
 ## Fix
 
-Replaced the three-step clipboard flow (`xclip write` → `get_window_class` → `Ctrl+V`) with a single `xdotool type --delay 0 --clearmodifiers -- <text>` call. This types keystrokes directly into the focused window — no clipboard involved at all.
+Replaced the three-step clipboard flow with a single `xdotool type` call:
 
-**Before:** `xclip` + window class detection + paste key simulation = 5008ms
-**After:** `xdotool type` = ~27ms
+```
+# Before (3 steps, ~5008ms)
+xclip -selection clipboard       # write text to clipboard
+xdotool getactivewindow          # detect if terminal (needs Ctrl+Shift+V)
+xdotool key ctrl+v               # simulate paste
+
+# After (1 step, ~27ms)
+xdotool type --delay 0 --clearmodifiers -- <text>
+```
+
+`xdotool type` simulates keystrokes directly into the focused window — no clipboard involved.
 
 ## What Was Removed
 
-The old approach (clipboard + paste) required:
-- `xclip` for writing to clipboard
-- `python-xlib` or `xdotool`/`xprop` for detecting focused window class (to distinguish terminals needing Ctrl+Shift+V vs normal apps needing Ctrl+V)
-- Xlib XTest or `xdotool key` for simulating the paste shortcut
-- `DEFAULT_SHIFT_PASTE_APPS` list for terminal detection
+The old approach required detecting the focused window class to distinguish terminals (Ctrl+Shift+V) from normal apps (Ctrl+V). With `xdotool type` that distinction is irrelevant, so the entire `DEFAULT_SHIFT_PASTE_APPS` list, window class detection, Xlib XTest paste simulation, and `xclip` dependency were all deleted. `TextInjector` went from ~170 lines to ~40.
 
-All of this was deleted. `TextInjector` is now ~40 lines vs ~170.
+## Result
 
-## Lesson: How to Diagnose Injection Latency
+```
+whisperflow.transcriber DEBUG Transcribed in 0.23s
+whisperflow.injector DEBUG xdotool type: 0.027s
+```
 
-1. Add `time.perf_counter()` timing around each subprocess call in the injection path
-2. Enable it via a `--verbose` / `-v` flag so it's available on demand without changing code
-3. A step taking exactly N seconds (where N is the timeout value) = subprocess hanging, not just slow
-
-## Files Changed
-
-- `src/whisperflow/injector.py` — complete rewrite of X11 injection path
-- `src/whisperflow/daemon.py` — removed window_class prefetch task
-- `src/whisperflow/cli.py` — added `-v/--verbose` flag for debug logging
+Total post-release latency: ~250ms.

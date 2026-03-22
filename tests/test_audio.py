@@ -1,4 +1,4 @@
-"""Tests for whisperflow.audio — uses mocks so CI works without hardware."""
+"""Tests for pushtype.audio — uses mocks so CI works without hardware."""
 
 from unittest.mock import MagicMock, patch
 
@@ -26,7 +26,7 @@ def test_list_devices_returns_only_input_devices():
         patch("sounddevice.query_devices", side_effect=_fake_query_devices),
         patch("sounddevice.default", MagicMock(device=[0, 1])),
     ):
-        from whisperflow.audio import list_devices
+        from pushtotype.audio import list_devices
 
         devs = list_devices()
     # Only the device with max_input_channels > 0 should appear
@@ -40,7 +40,7 @@ def test_list_devices_marks_default():
         patch("sounddevice.query_devices", side_effect=_fake_query_devices),
         patch("sounddevice.default", MagicMock(device=[0, 1])),
     ):
-        from whisperflow.audio import list_devices
+        from pushtotype.audio import list_devices
 
         devs = list_devices()
     assert devs[0]["is_default"] is True
@@ -67,7 +67,7 @@ def test_record_returns_float32_mono_array():
             pass
 
     with patch("sounddevice.InputStream", FakeInputStream):
-        from whisperflow.audio import record
+        from pushtotype.audio import record
 
         audio = record(duration=duration, sample_rate=sample_rate)
 
@@ -89,7 +89,7 @@ def test_record_raises_when_no_audio_captured():
             pass
 
     with patch("sounddevice.InputStream", EmptyInputStream):
-        from whisperflow.audio import record
+        from pushtotype.audio import record
 
         with pytest.raises(RuntimeError, match="No audio captured"):
             record(duration=0.01)
