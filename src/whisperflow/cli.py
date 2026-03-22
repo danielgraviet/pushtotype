@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 
 import click
@@ -15,12 +16,16 @@ from whisperflow.transcriber import Transcriber
 @click.option("--hotkey", default="rightctrl", show_default=True, help="Push-to-talk hotkey combo.")
 @click.option("--device", "audio_device", default=None, type=int, help="Audio device index.")
 @click.option("--no-feedback", is_flag=True, default=False, help="Disable audio feedback tones.")
+@click.option("-v", "--verbose", is_flag=True, default=False, help="Enable debug logging (shows injection timings).")
 @click.pass_context
-def main(ctx, model_name, hotkey, audio_device, no_feedback):
+def main(ctx, model_name, hotkey, audio_device, no_feedback, verbose):
     """WhisperFlow — real-time speech-to-text for Linux.
 
     Run without a subcommand to start the push-to-talk daemon.
     """
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG, format="%(name)s %(levelname)s %(message)s")
+
     if ctx.invoked_subcommand is None:
         from whisperflow.daemon import Daemon
 
